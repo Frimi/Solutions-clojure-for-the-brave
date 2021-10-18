@@ -44,7 +44,7 @@
   [str]
   (Integer. str))
 
-(def conversions {:name identity
+(def conversions {:name          identity
                   :glitter-index str->int})
 (defn convert
   [vamp-key value]
@@ -76,42 +76,46 @@
 ;Exercise 1
 ;---------------------------------------------------------------------------------------------------------------
 
-(defn glitter-filter
+(defn glitter-filter-names
   [minimum-glitter records]
   (map :name (filter #(>= (:glitter-index %) minimum-glitter) records)))
 
-(glitter-filter 3 (mapify (parse (slurp filename))))
+(glitter-filter-names 3 (mapify (parse (slurp filename))))
 
 ;---------------------------------------------------------------------------------------------------------------
 ;Exercise 2
 ;---------------------------------------------------------------------------------------------------------------
 
 (defn append-suspect
-  [suspect]
-  (spit filename (str "\r\n" (:name suspect) "," (:glitter-index suspect)) :append true))
+  [{:keys [name glitter-index]}
+   filename]
+  (spit filename
+        (str "\r\n" name "," glitter-index) :append true))
 
-;(append-suspect {:name "Gustavo" :glitter-index 23})
+;(append-suspect {:name "Gustavo" :glitter-index 23} filename)
 
 ;---------------------------------------------------------------------------------------------------------------
 ;Exercise 3
 ;---------------------------------------------------------------------------------------------------------------
 
 (defn validate-name
-  [record]
-  (string? (get record :name)))
+  [{:keys [name]}]
+  (string? name))
 
 (defn validate-glitter-index
-  [record]
-  (number? (get record :glitter-index)))
+  [{:keys [glitter-index]}]
+  (number? glitter-index))
 
-(def map-keywords {:name? validate-name
-                   :glitter-index? validate-glitter-index})
+(def map-keywords
+  {:name?          validate-name
+   :glitter-index? validate-glitter-index})
 
 (defn validate-and-append
   [map-keywords record]
-  (if (and ((map-keywords :name?) record)
-           ((map-keywords :glitter-index?) record))
-    (append-suspect record)))
+  (let [check-name ((map-keywords :name?) record)
+        check-glitter-index ((map-keywords :glitter-index?) record)]
+    (when (and check-name check-glitter-index)
+      (append-suspect record filename))))
 
 ;test
 ;(validate-and-append map-keywords {:name "Gustavo" :glitter-index 24})
@@ -129,8 +133,8 @@
 
 (defn validate-and-append2
   [record]
-  (if (record-valid? record)
-    (append-suspect record)))
+  (when (record-valid? record)
+    (append-suspect record filename)))
 
 ;test
 ;(validate-and-append2 {:name "Vinicius" :glitter-index 24})
@@ -144,17 +148,17 @@
 
 (defn add-eol
   [text]
-  (str text "\r\n"))
+  (map #(str % "\r\n") text))
 
 (defn separate-with-comma
   [coll]
-  (clojure.string/join "," coll))
+  (map #(clojure.string/join "," %) coll))
 
 (defn map-to-csv
   [coll]
-  (clojure.string/join (map add-eol
-                            (map separate-with-comma
-                                 (map vals coll)))))
+  (clojure.string/join (add-eol
+                         (separate-with-comma
+                           (map vals coll)))))
 
 ;(str (map-to-csv (mapify (parse (slurp filename)))))
 
@@ -166,8 +170,8 @@
   [coll]
   (->> coll
        (map vals)
-       (map separate-with-comma)
-       (map add-eol)
+       separate-with-comma
+       add-eol
        clojure.string/join))
 
 ;(str (map-to-csv-thread (mapify (parse (slurp filename)))))
