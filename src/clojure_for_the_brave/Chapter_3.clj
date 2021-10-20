@@ -141,6 +141,13 @@
       (recur (conj new-parts (replace-alien-part part n))
              (dec n)))))
 
+(defn replace-n-times-atom
+  [part n]
+  (let [new-part (atom [])]
+    (dotimes [times n]
+      (swap! new-part conj (replace-alien-part part times)))
+    @new-part))
+
 (defn new-alien-part
   [part n]
   (if (replace-alien-part? part)
