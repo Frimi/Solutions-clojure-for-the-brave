@@ -1,4 +1,4 @@
-(ns clojure-for-the-brave.Chapter5)
+(ns clojure-for-the-brave.Chapter_5)
 
 ;---------------------------------------------------------------------------------------------------------------
 ; Exercise 1

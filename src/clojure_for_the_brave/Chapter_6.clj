@@ -1,7 +1,6 @@
-(ns clojure-for-the-brave.core
-  (:require [clojure.java.browse :as browse]
-            [clojure-for-the-brave.visualization.svg :refer [xml]])
-  (:gen-class))
+(ns clojure-for-the-brave.Chapter-6
+  (:require [clojure-for-the-brave.visualization.svg :refer [points]]))
+
 
 (def heists [{:location "Cologne, Germany"
               :cheese-name "Archbishop Hildebold's Cheese Pretzel"
@@ -24,23 +23,6 @@
               :lat 41.90
               :lng 12.45}])
 
-(defn url
-  [filename]
-  (str "file:///"
-       (System/getProperty "user.dir")
-       "/"
-       filename))
-
-(defn template
-  [contents]
-  (str "<style>polyline { fill:none; stroke:#5881d8; stroke-width:3}</style>"
-       contents))
-
 (defn -main
   [& args]
-  (let [filename "map.html"]
-    (->> heists
-         (xml 50 100)
-         template
-         (spit filename))
-    (browse/browse-url (url filename))))
+  (println (points heists)))

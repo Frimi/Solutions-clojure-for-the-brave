@@ -1,6 +1,6 @@
 (ns clojure-for-the-brave.core-test
   (:require [clojure.test :refer :all]
-            [clojure-for-the-brave.Chapter5 :as sut]))
+            [clojure-for-the-brave.Chapter_5 :as sut]))
 
 (defn async-generator-mouth
   [valor]
@@ -25,9 +25,9 @@
    {:name "left-foot" :size 2}])
 
 (deftest a-test
-  (testing "FIXME, I fail."
+  (testing "Test Update-in for division."
     (is (= (sut/my-update-in (async-generator-mouth 1) [4 :size] / 2)
            (async-generator-mouth 1/2))))
-  (testing "FIXME, I fail."
+  (testing "Test Update-in for addition."
     (is (= (sut/my-update-in (async-generator-mouth 1) [4 :size] + 10 10 10 10 10)
            (async-generator-mouth 51)))))
