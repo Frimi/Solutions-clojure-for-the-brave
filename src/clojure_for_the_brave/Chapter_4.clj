@@ -33,7 +33,7 @@
 (defn my-partial
   [partialized-fn & args]
   (fn [& more-args]
-    (apply partialized-fn (into args more-args))))
+    (apply partialized-fn (into more-args args))))
 
 ;---------------------------------------------------------------------------------------------------------------
 ;Vampire Issue
